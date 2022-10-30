@@ -1,11 +1,11 @@
 window.config = {
 
 	// the url of the DonorDrive API you wish to poll
-	api: 'https://docs.donordrive.com/api/',
+	api: 'https://extralife.donordrive.com/api/',
 	// the resource (events, participants, teams)
 	resource: 'participants',
 	// the ID of the specific resource to poll
-	resourceID: 2065,
+	resourceID: 484208,
 
 	// properties specific to donation-ticker
 	donationTicker: {
