@@ -29,7 +29,7 @@ window.config = {
 
 	// properties specific to streaming-thermometer
 	streamingThermometer: {
-		showDonations: true
+		showDonations: false
 	}
 
 };

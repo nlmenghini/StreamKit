@@ -3,35 +3,23 @@
 		<script src="https://cdn.jsdelivr.net/npm/numeral@2.0.6/numeral.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<link rel="stylesheet" href="resources/css/streaming-overlay.css"/>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+		<link rel="stylesheet" href="resources/css/streaming-overlay.css"/>
 		<script src="config.js"></script>
 	</head>
 	<body>
-		<div id="app" class="py-3 bg-grad-grey shadow text-light position-relative overflow-hidden rounded" style="width: 600px;">
-			<section class="container-fluid">
-				<div class="row align-items-center">
-					<div class="col-3">
-						<img src="resources/images/streamingOverlayLogo.png" class="img-fluid" style="max-height: 60px;" alt="Logo" />
-					</div>
-					<div class="col-9 js-progress">
-						<div class="text-right">
-							<h1 class="h5">{{ entity.sumDonations | formatMoney }} / {{ entity.fundraisingGoal | formatMoney }}</h1>
-						</div>
-						<div class="progress">
-							<div class="progress-bar progress-bar-grow bg-blue" role="progressbar" v-bind:style="{ width: ((entity.sumDonations / entity.fundraisingGoal) * 100) + '%' }"></div>
-						</div>
-					</div>
+		<div id="app">
+			<div id="percentage" class="progress" v-bind:data-percentage="Math.floor((entity.sumDonations / entity.fundraisingGoal) * 100)">
+				<span class="progress-left">
+					<span class="progress-bar"></span>
+				</span>
+				<span class="progress-right">
+					<span class="progress-bar"></span>
+				</span>
+				<div class="progress-value">
+					<h1 class="h1 glow">{{ Math.floor((entity.sumDonations / entity.fundraisingGoal) * 100) }}%</h1>
 				</div>
-			</section>
-			<transition name="slide">
-				<section v-if="donation" class="row no-gutters align-items-center bg-grad-blue position-absolute pos-t-0 h-100 w-100 slide-start-right slide-left">
-					<div class="col px-3 py-2">
-						<h1 class="h2 d-block w-100"><span v-if="donation.amount">{{ donation.amount | formatMoney }}</span></h1>
-						<h2 class="h6 d-block w-100"><span v-if="donation.displayName">{{ donation.displayName }}</span><span v-else>Anonymous</span></h2>
-					</div>
-				</section>
-			</transition>
+			</div>
 		</div>
 	</body>
 	<script>
@@ -108,7 +96,8 @@
 				7000
 			);
 		}
-
+		
 		v.refreshEntity();
+
 	</script>
 </html>
