@@ -1,22 +1,6 @@
 @font-face {
-    font-family: "New_Airport_Dot_1";
-    src: url("../fonts/NewAirportDot1.otf") format("opentype");
-}
-@font-face {
-    font-family: "New_Airport_Dot_2";
-    src: url("../fonts/NewAirportDot2.otf") format("opentype");
-}
-@font-face {
-    font-family: "New_Airport_Dot_3";
-    src: url("../fonts/NewAirportDot3.otf") format("opentype");
-}
-@font-face {
-    font-family: "New_Airport_Dot_4";
-    src: url("../fonts/NewAirportDot4.otf") format("opentype");
-}
-@font-face {
-    font-family: "New_Airport_Dot_5";
-    src: url("../fonts/NewAirportDot5.otf") format("opentype");
+    font-family: "Marvin-Visions-Big-Bold";
+    src: url("../fonts/MarvinVisionsBig-Bold.woff2") format('woff');
 }
 
 html {
@@ -24,44 +8,19 @@ html {
 }
 
 body {
-	font-family: "Gilroy-Medium", arial, sans-serif;
+	font-family: "BrockmannMedium", arial, sans-serif;
+	font-weight: 900;
 	margin: 0;
 	background-color: black;
 }
 
 h1 {
-	font-family: "New_Airport_Dot_3", arial, sans-serif;
+	font-family: "BrockmannMedium", arial, sans-serif;
+	font-weight: 900;
 	position: relative;
-    top: 10px;
+    top: 5px;
 	font-size: 3em;
-	color: white;
-}
-
-.glow {
-	-webkit-animation: glow 1s ease-in-out infinite alternate;
-	-moz-animation: glow 1s ease-in-out infinite alternate;
-	animation: glow 1s ease-in-out infinite alternate;
-}
-  
-@keyframes glow {
-  from {
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.4),
-            0 0 2px rgba(255, 255, 255, 0.4), 
-          0 0 3px rgba(255, 255, 255, 0.4), 
-          0 0 4px rgba(255, 255, 255, 0.4), 
-          0 0 5px rgba(255, 255, 255, 0.4), 
-          0 0 6px rgba(255, 255, 255, 0.4), 
-          0 0 7px rgba(255, 255, 255, 0.4);
-  }
-  to {
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.45),
-            0 0 3px rgba(255, 255, 255, 0.45),
-          0 0 4px rgba(255, 255, 255, 0.45), 
-          0 0 5px rgba(255, 255, 255, 0.45), 
-          0 0 6px rgba(255, 255, 255, 0.45), 
-          0 0 7px rgba(255, 255, 255, 0.45), 
-          0 0 8px rgba(255, 255, 255, 0.45);
-  }
+	color: #49D59C;
 }
 
 .progress {
@@ -77,7 +36,7 @@ h1 {
 	width: 100%;
 	height: 100%;
 	border-radius: 50%;
-	border: 10px solid rgba(255, 255, 255, 0.25);
+	border: 10px solid rgba(73, 213, 156, .25);
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -101,7 +60,7 @@ h1 {
 	border-style: solid;
 	position: absolute;
 	top: 0;
-	border-color: rgba(255, 255, 255, 0.75);
+	border-color: rgba(73, 213, 156, 1);
   }
 
   .progress .progress-left .progress-bar {
@@ -134,17 +93,17 @@ h1 {
 	height: 100%;
 	width: 100%;
 	font-weight: 300;
-
-	background-image: radial-gradient(rgba(255, 255, 255, 0.5) 20%, transparent 50%), radial-gradient(rgba(255, 255, 255, 0.35) 20%, transparent 50%);
-    background-position: 0px 0, 52.5px 52.5px;
-    background-size: 5px 5px;
-
 	position: relative;
     width: 80%;
     height: 80%;
     top: 10%;
     left: 10%;
-  }
+	text-shadow: 2px 4px rgba(24, 71, 61, .5),
+			0px 0px 5px rgba(24, 71, 61, .1),
+			0px 0px 10px rgba(24, 71, 61, .2),
+			0px 0px 15px rgba(24, 71, 61, .3),
+			0px 0px 20px rgba(24, 71, 61, .4);
+ }
   
   /* This for loop creates the necessary css animation names 
   Due to the split circle of progress-left and progress right, we must use the animations on each side. 
@@ -1348,5 +1307,22 @@ h1 {
 	  -webkit-transform: rotate(180);
 	  transform: rotate(180deg);
 	}
+  }
+
+
+  .seafoam-glow {
+	box-shadow: 0 0 40px rgba(17,249,249,.3), inset 0 0 40px rgba(17,249,249,.3);
+	-webkit-animation: seafoam-glow 5s ease-in-out infinite alternate;
+	  -moz-animation: seafoam-glow 5s ease-in-out infinite alternate;
+	  animation: seafoam-glow 5s ease-in-out infinite alternate;
+	z-index: 100;
+  }
+  
+  .gold-glow {
+	box-shadow: 0 0 40px rgba(255, 232, 31,.4), inset 0 0 40px rgba(255, 232, 31,.4);
+	-webkit-animation: gold-glow 5s ease-in-out infinite alternate;
+	  -moz-animation: gold-glow 5s ease-in-out infinite alternate;
+	  animation: gold-glow 5s ease-in-out infinite alternate;
+	z-index: 100;
   }
   

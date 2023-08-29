@@ -5,7 +5,7 @@ window.config = {
 	// the resource (events, participants, teams)
 	resource: 'participants',
 	// the ID of the specific resource to poll
-	resourceID: 484208,
+	resourceID: 516575,
 
 	// properties specific to donation-ticker
 	donationTicker: {
