@@ -5,7 +5,11 @@ window.config = {
 	// the resource (events, participants, teams)
 	resource: 'participants',
 	// the ID of the specific resource to poll
+<<<<<<< Updated upstream
 	resourceID: 2065,
+=======
+	resourceID: 535396,
+>>>>>>> Stashed changes
 
 	// properties specific to donation-ticker
 	donationTicker: {

@@ -1,0 +1,238 @@
+<html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/dayjs@1.9.1/dayjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/numeral@2.0.6/numeral.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+	<script src="config.js"></script>
+	<style>
+		/* Custom CSS for horizontal progress bar */
+		@font-face {
+			font-family: "NBArchitekLight";
+			src: url("fonts/NBArchitektStd-Light.otf") format('opentype');
+		}
+
+		@font-face {
+			font-family: "NBArchitekRegular";
+			src: url("resources/fonts/NBArchitektStd-Regular.otf") format('opentype');
+		}
+
+		@font-face {
+			font-family: "NBArchitekBold";
+			src: url("fonts/NBArchitektStd-Bold.otf") format('opentype');
+		}
+
+		.info-container {
+			background-color: #01020350;
+			width: calc(100% - 592px);
+			height: 50px;
+			display: block;
+			position: fixed;
+			bottom: 50px;
+			left: 592px;
+		}
+
+		.progress {
+			height: 5px;
+			background-color: #01020399;
+			border-radius: 0;
+			/* Adjust the height of the progress bar */
+		}
+
+		.progress-bar {
+			background-color: #f4f4f9;
+			/* Customize the color of the progress bar */
+		}
+
+		.progress-bar-container {
+			position: absolute;
+			border: 1px solid var(--white);
+			width: 1328px;
+			left: 0px;
+			height: 50px;
+			padding: 0 20px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.progress-header {
+			display: flex;
+			line-height: 1;
+			color: #f4f4f9;
+			font-family: "NBArchitekRegular", arial, sans-serif;
+		}
+
+		.progress-percent {
+			height: 25px;
+			width: 250px;
+			font-size: 18px;
+		}
+
+		.progress-header-text {
+			height: 25px;
+			font-size: 18px;
+			width: 1380px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="info-container">
+		<div id="app" class="">
+			<div class="progress-bar-container">
+				<div class="progress-header">
+					<!-- Display how much is left to reach $100 -->
+					<div class="progress-header-text">10 more mins on the bike in: {{
+						remainingToReset | formatMoney }}</div>
+					<div class="progress-percent">Mins owed: <span id="mins-owed"></span></div>
+					<div class="progress-percent">Mins claimed: <span id="mins-claimed"></span></div>
+				</div>
+				<div class="progress">
+					<div class="progress-bar" role="progressbar"
+						v-bind:style="{ width: (displayDonations / 100) * 100 + '%' }"></div>
+					<!-- Use width for horizontal fill -->
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	var auto_refresh = setInterval(
+		function () {
+			jQuery.get('resources/rides-owed.txt', function (data) {
+				$('#mins-owed').html((data.replace('n', '')) * 10);
+			});
+		}, 10000
+	);
+
+</script>
+<script type="text/javascript">
+	var auto_refresh = setInterval(
+		function () {
+			jQuery.get('resources/rides-claimed.txt', function (data) {
+				$('#mins-claimed').html((data.replace('n', '')) * 10);
+			});
+		}, 10000
+	);
+
+</script>
+
+<script>
+	Vue.filter(
+		'formatDate',
+		(value) => {
+			return dayjs(value).format(window.config.donationTicker.dateMask);
+		}
+	);
+
+	Vue.filter(
+		'formatMoney',
+		(value) => {
+			return numeral(value).format('$0,0.00');
+		}
+	);
+
+	var v = new Vue({
+		data: {
+			donations: [],
+			entity: {
+				sumDonations: 0,  // initial donation value
+				fundraisingGoal: 100,  // adjust the goal as per your need
+				etag: ''
+			},
+			displayDonations: 0,  // display value that will reset after 100
+			resetCounter: 0,  // counter to track how many times donations reset
+			startingResetCounter: null,  // track the starting number of resets, initialized as null
+			highlightDuration: (window.config.donationTicker.highlightDuration * 1000),
+			highlightThreshold: window.config.donationTicker.highlightThreshold
+		},
+		computed: {
+			// Calculate how much is left to reach the next $100 reset
+			remainingToReset() {
+				return 100 - this.displayDonations;
+			},
+			// Calculate the new resets by subtracting the initial value from current resets
+			newResets() {
+				if (this.startingResetCounter === null) return 0;  // If the starting counter hasn't been set, return 0
+				return this.resetCounter - this.startingResetCounter;
+			}
+		},
+		el: '#app',
+		methods: {
+			refreshDonations() {
+				var criteria = 'orderBy=' + encodeURIComponent('createdDateUTC DESC') + '&limit=' + window.config.donationTicker.listLimit.toString(),
+					lastDonation;
+
+				if (this.entity.lastDonation) {
+					lastDonation = new Date(this.entity.lastDonation);
+					criteria = 'where=' + encodeURIComponent('createdDateUTC > ' + lastDonation.toISOString()) + '&orderBy=' + encodeURIComponent('createdDateUTC ASC');
+				}
+
+				axios.get(window.config.api + window.config.resource + '/' + window.config.resourceID + '/donations' + (window.config.api.indexOf('?') >= 0 ? '&' : '?') + criteria)
+					.then((response) => {
+						response.data.forEach((dx) => {
+							var createdDate = new Date(dx.createdDateUTC);
+
+							if (lastDonation) {
+								if (createdDate > lastDonation) {
+									this.donations.unshift(dx);
+								}
+							} else {
+								this.donations.push(dx);
+							}
+
+							if (this.donations.length > window.config.donationTicker.listLimit) {
+								this.donations.length = window.config.donationTicker.listLimit;
+							}
+
+							this.entity.lastDonation = createdDate;
+						});
+					});
+			},
+			refreshEntity() {
+				axios.get(window.config.api + window.config.resource + '/' + window.config.resourceID, { headers: { 'if-none-match': this.entity.etag } })
+					.then((response) => {
+						// success
+						var e = Object.assign({}, this.entity, response.data);
+						e.etag = response.headers.etag;
+
+						this.entity = e;
+
+						// Check if donations exceed $100 and carry over any excess
+						while (this.entity.sumDonations >= 100) {
+							this.entity.sumDonations -= 100;  // Subtract 100 from sumDonations
+							this.resetCounter++;  // Increment counter on reset
+						}
+
+						// Update the display with the remaining amount
+						this.displayDonations = this.entity.sumDonations;
+
+						// Set the startingResetCounter if it has not been initialized yet
+						if (this.startingResetCounter === null) {
+							this.startingResetCounter = this.resetCounter;
+						}
+
+						v.refreshDonations();
+					})
+					.catch((error) => { });
+			}
+		}
+	});
+
+	setInterval(
+		() => {
+			v.refreshEntity();
+		},
+		15000
+	);
+
+	v.refreshEntity();
+</script>
+
+</html>
